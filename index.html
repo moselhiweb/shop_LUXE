@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUXE — متجر الفخامة</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel=stylesheet href=style.css>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- PAGE TRANSITION -->
+<div class="page-transition" id="pageTransition"></div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay" onclick="backToHome()">
+  <div class="success-particles" id="successParticles"></div>
+  <div class="success-box">
+    <div class="success-icon">✓</div>
+    <div class="success-title">تم الطلب!</div>
+    <div class="success-sub">شكراً لك على ثقتك بـ LUXE<br>سيصلك طلبك في أقرب وقت ممكن</div>
+    <div class="success-order-num">رقم الطلب: #LX-<span id="orderNum">28491</span></div>
+    <button class="btn-success-home" onclick="backToHome()">العودة للمتجر</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — STORE
+════════════════════════════════════════ -->
+<div class="page active" id="page1">
+  <nav class="navbar">
+    <div class="logo">LU<span>X</span>E</div>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="goToPage(3)">
+        🛒 السلة
+        <div class="cart-count" id="cartCount">0</div>
+      </button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">إصدارات جديدة — 2025</p>
+      <h1 class="hero-title">
+        <span class="line1">مرحباً بك في</span>
+        <span class="line2" style="letter-spacing: 8px; font-style: normal;">LUXE</span>
+      </h1>
+      <p class="hero-sub">الوجهة الأولى لأرقى المنتجات العالمية</p>
+    </div>
+    <div class="hero-scroll">
+      <span>اكتشف</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <div class="section-header reveal">
+    <span class="section-label">كولكشن 2025</span>
+    <h2 class="section-title">منتجاتنا <em>المميزة</em></h2>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Products injected by JS -->
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — PRODUCT DETAIL
+════════════════════════════════════════ -->
+<div class="page" id="page2">
+  <nav class="navbar">
+    <div class="logo">LU<span>X</span>E</div>
+    <div class="nav-actions">
+      <button class="breadcrumb-link" onclick="navigateTo(1)" style="margin-left:20px;background:none;border:none;color:var(--gray);font-family:'Cairo',sans-serif;font-size:14px;cursor:none;">← رجوع</button>
+      <button class="cart-btn" onclick="goToPage(3)">
+        🛒 السلة
+        <div class="cart-count" id="cartCount2">0</div>
+      </button>
+    </div>
+  </nav>
+
+  <div class="detail-nav">
+    <span class="breadcrumb-link" onclick="navigateTo(1)">المتجر</span>
+    <span class="breadcrumb-sep">›</span>
+    <span id="detailCat">أزياء</span>
+    <span class="breadcrumb-sep">›</span>
+    <span id="detailBreadName" style="color:var(--gold)">المنتج</span>
+  </div>
+
+  <div class="detail-layout">
+    <div class="detail-gallery">
+      <img class="detail-main-img" id="detailMainImg" src="" alt="">
+      <div class="detail-thumbnails" id="detailThumbs"></div>
+    </div>
+    <div class="detail-info">
+      <div class="detail-cat" id="detailCatLabel">أزياء</div>
+      <h1 class="detail-name" id="detailName">اسم المنتج</h1>
+      <div class="detail-rating">
+        <div class="stars">★★★★★</div>
+        <span class="rating-count">(128 تقييم)</span>
+      </div>
+      <div class="detail-price-block">
+        <div class="detail-price" id="detailPrice">$299</div>
+        <div class="detail-old-price" id="detailOldPrice">$499</div>
+        <div class="detail-discount" id="detailDiscount">-40%</div>
+      </div>
+      <p class="detail-desc" id="detailDesc">وصف المنتج</p>
+
+      <div style="display:flex; align-items:center; gap:0;">
+        <span class="qty-label">الكمية:</span>
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <input class="qty-display" id="qtyDisplay" value="1" readonly>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-buy" onclick="buyNow()">اشتري الآن</button>
+        <button class="btn-cart" onclick="addToCartFromDetail()" title="أضف للسلة">🛒</button>
+      </div>
+
+      <div class="detail-features">
+        <div class="feature-item">
+          <span class="feature-icon">🚚</span>
+          <span class="feature-text">شحن مجاني</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">↩️</span>
+          <span class="feature-text">إرجاع 30 يوم</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <span class="feature-text">دفع آمن</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">ضمان الجودة</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUGGESTIONS -->
+  <div class="suggestions-section">
+    <h3 class="suggestions-title">قد يعجبك <span>أيضاً</span></h3>
+    <div class="suggestions-grid" id="suggestionsGrid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — CHECKOUT FORM
+════════════════════════════════════════ -->
+<div class="page" id="page3">
+  <nav class="navbar">
+    <div class="logo">LU<span>X</span>E</div>
+    <div class="nav-actions">
+      <button class="breadcrumb-link" onclick="navigateTo(1)" style="background:none;border:none;color:var(--gray);font-family:'Cairo',sans-serif;font-size:14px;cursor:none;">← رجوع</button>
+    </div>
+  </nav>
+
+  <div class="checkout-layout">
+    <div class="form-section">
+      <h1 class="form-title">معلومات الشحن</h1>
+      <p class="form-subtitle">أدخل بياناتك لإتمام الطلب</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">الاسم الأول</label>
+          <input class="form-input" id="firstName" type="text" placeholder="محمد">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الاسم الأخير</label>
+          <input class="form-input" id="lastName" type="text" placeholder="أحمد">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input class="form-input" id="email" type="email" placeholder="example@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">رقم الهاتف</label>
+        <input class="form-input" id="phone" type="tel" placeholder="+20 1XX XXX XXXX">
+      </div>
+
+      <div class="form-section-divider"><span>عنوان التوصيل</span></div>
+
+      <div class="form-group">
+        <label class="form-label">العنوان</label>
+        <input class="form-input" id="address" type="text" placeholder="رقم الشارع، اسم الشارع">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">المدينة</label>
+          <input class="form-input" id="city" type="text" placeholder="القاهرة">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الكود البريدي</label>
+          <input class="form-input" id="postal" type="text" placeholder="12345">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">الدولة</label>
+        <select class="form-input" id="country">
+          <option>مصر</option>
+          <option>السعودية</option>
+          <option>الإمارات</option>
+          <option>الكويت</option>
+          <option>قطر</option>
+          <option>البحرين</option>
+          <option>عُمان</option>
+          <option>الأردن</option>
+        </select>
+      </div>
+
+      <button class="btn-continue" onclick="continueToCheckout()">
+        متابعة الدفع ←
+      </button>
+    </div>
+
+    <div class="order-sidebar">
+      <h3 class="sidebar-title">ملخص الطلب</h3>
+      <div id="sidebarOrderItem"></div>
+      <div class="order-totals">
+        <div class="totals-row"><span>المنتجات</span><span id="sidebarSubtotal">$0</span></div>
+        <div class="totals-row"><span>الشحن</span><span style="color:var(--green)">مجاني</span></div>
+        <div class="totals-row"><span>الضريبة</span><span id="sidebarTax">$0</span></div>
+        <div class="totals-row total"><span>الإجمالي</span><span class="amount" id="sidebarTotal">$0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 4 — INVOICE
+════════════════════════════════════════ -->
+<div class="page" id="page4">
+  <nav class="navbar">
+    <div class="logo">LU<span>X</span>E</div>
+    <div class="nav-actions">
+      <button class="breadcrumb-link" onclick="navigateTo(3)" style="background:none;border:none;color:var(--gray);font-family:'Cairo',sans-serif;font-size:14px;cursor:none;">← رجوع</button>
+    </div>
+  </nav>
+
+  <div class="invoice-wrapper">
+    <div class="invoice-header">
+      <div>
+        <div class="invoice-logo">LUXE</div>
+        <div style="font-size:13px;color:var(--gray);margin-top:8px;">متجر الفخامة الحقيقية</div>
+      </div>
+      <div class="invoice-meta">
+        <div class="invoice-num">فاتورة رقم #LX-<span id="invNum">28491</span></div>
+        <div class="invoice-date" id="invDate">التاريخ: —</div>
+        <div style="font-size:12px;color:var(--green);margin-top:8px;letter-spacing:2px;">● مؤكد</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 40px; padding: 24px; background: var(--dark2); border: 1px solid var(--dark3);">
+      <span class="party-label" style="color: var(--white); font-size: 13px; letter-spacing: 2px;">بيانات العميل والشحن</span>
+      <div class="party-name" id="invClientName" style="color: var(--gold); margin-top: 16px;">—</div>
+      <div class="party-detail" id="invClientDetails">—</div>
+    </div>
+
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>المنتج</th>
+          <th>الكمية</th>
+          <th>السعر</th>
+          <th>الإجمالي</th>
+        </tr>
+      </thead>
+      <tbody id="invTableBody"></tbody>
+    </table>
+
+    <div class="invoice-totals-section">
+      <div class="invoice-totals-box">
+        <div class="inv-total-row"><span>المجموع الفرعي</span><span id="invSubtotal">$0</span></div>
+        <div class="inv-total-row"><span>الشحن</span><span style="color:var(--green)">مجاني</span></div>
+        <div class="inv-total-row"><span>الضريبة (14%)</span><span id="invTax">$0</span></div>
+        <div class="inv-total-row grand"><span>الإجمالي</span><span id="invTotal">$0</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <button class="btn-confirm" style="flex: 1;" onclick="confirmOrder()">
+        تأكيد الطلب ✓
+      </button>
+      
+      <button class="action-icon-btn" onclick="window.print()" title="طباعة الفاتورة">
+        <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+      </button>
+      
+      <button class="action-icon-btn" onclick="downloadInvoicePDF()" title="تحميل PDF">
+        <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script src=script.js></script>
+</body>
+</html>
+
