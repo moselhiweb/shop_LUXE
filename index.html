@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUXE — متجر الفخامة</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<link rel=stylesheet href=style.css>
+<link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -30,6 +30,42 @@
   </div>
 </div>
 
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar">
+  <div class="compare-bar-inner">
+    <span class="compare-bar-label">مقارنة المنتجات</span>
+    <div class="compare-items" id="compareItems"></div>
+    <button class="btn-do-compare" onclick="doCompare()">قارن الآن</button>
+    <button class="compare-clear" onclick="clearCompare()">✕ مسح</button>
+  </div>
+</div>
+
+<!-- WISHLIST PANEL -->
+<div class="wishlist-overlay" id="wishlistOverlay" onclick="closeWishlist(event)">
+  <div class="wishlist-panel">
+    <div class="wishlist-header">
+      <h3>قائمة المفضلة ♡</h3>
+      <button class="wishlist-close" onclick="closeWishlistPanel()">✕</button>
+    </div>
+    <div class="wishlist-items" id="wishlistItems"></div>
+    <div class="wishlist-empty" id="wishlistEmpty">
+      <div style="font-size:48px;margin-bottom:16px">♡</div>
+      <div>لا يوجد منتجات في المفضلة بعد</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="compare-overlay" id="compareOverlay" onclick="closeCompareModal(event)">
+  <div class="compare-modal">
+    <div class="compare-modal-header">
+      <h3>مقارنة المنتجات</h3>
+      <button onclick="closeCompareModal()" class="wishlist-close">✕</button>
+    </div>
+    <div class="compare-table-wrap" id="compareTableWrap"></div>
+  </div>
+</div>
+
 <!-- ════════════════════════════════════════
      PAGE 1 — STORE
 ════════════════════════════════════════ -->
@@ -37,6 +73,7 @@
   <nav class="navbar">
     <div class="logo">LU<span>X</span>E</div>
     <div class="nav-actions">
+      <button class="wishlist-nav-btn" onclick="openWishlistPanel()" title="المفضلة">♡ <span id="wishlistCount">0</span></button>
       <button class="cart-btn" onclick="goToPage(3)">
         🛒 السلة
         <div class="cart-count" id="cartCount">0</div>
@@ -65,6 +102,27 @@
     <span class="section-label">كولكشن 2025</span>
     <h2 class="section-title">منتجاتنا <em>المميزة</em></h2>
   </div>
+
+  <!-- FILTER & SEARCH BAR -->
+  <div class="filter-bar reveal" id="filterBar">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="ابحث عن منتج...">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+    </div>
+    <div class="filter-cats" id="filterCats">
+      <button class="filter-cat active" data-cat="الكل" onclick="filterBycat(this)">الكل</button>
+    </div>
+    <div class="sort-wrapper">
+      <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+        <option value="default">الترتيب الافتراضي</option>
+        <option value="price-asc">السعر: الأقل أولاً</option>
+        <option value="price-desc">السعر: الأعلى أولاً</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="filter-results" id="filterResults"></div>
 
   <div class="products-grid" id="productsGrid">
     <!-- Products injected by JS -->
@@ -123,6 +181,8 @@
       <div class="detail-actions">
         <button class="btn-buy" onclick="buyNow()">اشتري الآن</button>
         <button class="btn-cart" onclick="addToCartFromDetail()" title="أضف للسلة">🛒</button>
+        <button class="btn-wishlist" id="btnWishlist" onclick="toggleWishlist()" title="المفضلة">♡</button>
+        <button class="btn-compare" onclick="addToCompare()" title="مقارنة">⇌</button>
       </div>
 
       <div class="detail-features">
@@ -143,6 +203,34 @@
           <span class="feature-text">ضمان الجودة</span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="reviews-section" id="reviewsSection">
+    <div class="reviews-header">
+      <h3 class="reviews-title">آراء <span>العملاء</span></h3>
+      <div class="reviews-summary">
+        <div class="avg-rating" id="avgRating">4.5</div>
+        <div>
+          <div class="avg-stars" id="avgStars">★★★★½</div>
+          <div class="avg-count" id="avgCount">128 تقييم</div>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-list" id="reviewsList"></div>
+    <div class="review-form">
+      <h4 class="review-form-title">أضف تقييمك</h4>
+      <div class="star-picker" id="starPicker">
+        <span class="star-opt" data-val="1">★</span>
+        <span class="star-opt" data-val="2">★</span>
+        <span class="star-opt" data-val="3">★</span>
+        <span class="star-opt" data-val="4">★</span>
+        <span class="star-opt" data-val="5">★</span>
+      </div>
+      <input class="review-input" id="reviewName" type="text" placeholder="اسمك">
+      <textarea class="review-input review-textarea" id="reviewText" placeholder="اكتب رأيك..."></textarea>
+      <button class="btn-submit-review" onclick="submitReview()">إرسال التقييم</button>
     </div>
   </div>
 
@@ -222,6 +310,14 @@
         </select>
       </div>
 
+      <div class="coupon-row">
+        <div class="coupon-wrapper">
+          <input class="form-input coupon-input" id="couponInput" type="text" placeholder="كود الخصم (مثال: LUXE20)">
+          <button class="btn-apply-coupon" onclick="applyCoupon()">تطبيق</button>
+        </div>
+        <div class="coupon-msg" id="couponMsg"></div>
+      </div>
+
       <button class="btn-continue" onclick="continueToCheckout()">
         متابعة الدفع ←
       </button>
@@ -232,6 +328,7 @@
       <div id="sidebarOrderItem"></div>
       <div class="order-totals">
         <div class="totals-row"><span>المنتجات</span><span id="sidebarSubtotal">$0</span></div>
+        <div class="totals-row" id="sidebarDiscountRow" style="display:none;color:var(--green)"><span>خصم الكوبون</span><span id="sidebarDiscount">-$0</span></div>
         <div class="totals-row"><span>الشحن</span><span style="color:var(--green)">مجاني</span></div>
         <div class="totals-row"><span>الضريبة</span><span id="sidebarTax">$0</span></div>
         <div class="totals-row total"><span>الإجمالي</span><span class="amount" id="sidebarTotal">$0</span></div>
@@ -318,7 +415,7 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
-<script src=script.js></script>
+<script src="script.js"></script>
 </body>
 </html>
 
